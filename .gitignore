@@ -1,0 +1,9 @@
+```
+# Logs
+logs/
+
+# Models and outputs
+models/*.joblib
+models/training_metrics.json
+output/
+```
