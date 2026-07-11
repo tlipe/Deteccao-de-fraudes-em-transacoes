@@ -1,22 +1,10 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Sistema de Detecção de Fraudes em Transações Financeiras
-Curso Python DIO
-
-Este módulo implementa um sistema completo de detecção de fraudes utilizando
-machine learning, pandas para manipulação de dados, e bibliotecas de segurança
-e logging para monitoramento.
-
-Autor: Sistema DIO
-Data: 2024
-"""
-
 import os
 import sys
 import logging
 import hashlib
+
 import json
+
 from datetime import datetime
 from pathlib import Path
 from typing import Tuple, Optional, Dict, Any
@@ -25,10 +13,12 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
+
 from sklearn.metrics import (
     classification_report,
     confusion_matrix,
@@ -37,7 +27,9 @@ from sklearn.metrics import (
     precision_recall_curve,
     average_precision_score
 )
+
 from sklearn.utils.class_weight import compute_class_weight
+
 import joblib
 
 # Configuração do Logging
@@ -84,36 +76,13 @@ def setup_logging(log_dir: str = "logs") -> logging.Logger:
 
 
 class SecurityManager:
-    """
-    Gerenciador de segurança para proteção de dados sensíveis.
-    """
-    
     @staticmethod
     def hash_data(data: str, salt: str = "dio_fraud_detection") -> str:
-        """
-        Gera hash seguro para dados sensíveis.
-        
-        Args:
-            data: Dados a serem hasheados
-            salt: Salt para aumentar segurança
-            
-        Returns:
-            Hash SHA-256 dos dados
-        """
         salted_data = f"{salt}{data}{salt}"
         return hashlib.sha256(salted_data.encode()).hexdigest()
     
     @staticmethod
     def validate_data_integrity(df: pd.DataFrame) -> Dict[str, Any]:
-        """
-        Valida a integridade dos dados.
-        
-        Args:
-            df: DataFrame para validação
-            
-        Returns:
-            Dicionário com informações de integridade
-        """
         integrity_info = {
             "timestamp": datetime.now().isoformat(),
             "row_count": len(df),
@@ -122,40 +91,25 @@ class SecurityManager:
             "duplicate_rows": int(df.duplicated().sum()),
             "data_hash": SecurityManager.hash_data(str(df.shape))
         }
+        
         return integrity_info
 
 
 class FraudDetectionSystem:
-    """
-    Sistema principal de detecção de fraudes em transações financeiras.
-    """
-    
     def __init__(self, logger: Optional[logging.Logger] = None):
-        """
-        Inicializa o sistema de detecção de fraudes.
-        
-        Args:
-            logger: Logger para registro de eventos
-        """
         self.logger = logger or setup_logging()
+        
         self.model: Optional[Any] = None
         self.scaler: Optional[StandardScaler] = None
+        
         self.feature_columns: list = []
+        
         self.training_metrics: Dict[str, Any] = {}
         self.security_manager = SecurityManager()
         
         self.logger.info("Sistema de Detecção de Fraudes inicializado")
     
     def load_data(self, data_path: str) -> pd.DataFrame:
-        """
-        Carrega os dados do CSV.
-        
-        Args:
-            data_path: Caminho para o arquivo CSV
-            
-        Returns:
-            DataFrame com os dados carregados
-        """
         self.logger.info(f"Carregando dados de: {data_path}")
         
         try:
@@ -167,20 +121,12 @@ class FraudDetectionSystem:
             self.logger.debug(f"Integridade dos dados: {integrity}")
             
             return df
+            
         except Exception as e:
             self.logger.error(f"Erro ao carregar dados: {str(e)}")
             raise
     
     def load_data_from_url(self, url: str) -> pd.DataFrame:
-        """
-        Carrega dados diretamente de uma URL.
-        
-        Args:
-            url: URL do dataset
-            
-        Returns:
-            DataFrame com os dados
-        """
         self.logger.info(f"Carregando dados da URL: {url}")
         
         try:
@@ -192,13 +138,6 @@ class FraudDetectionSystem:
             raise
     
     def explore_data(self, df: pd.DataFrame, output_dir: str = "output") -> None:
-        """
-        Realiza análise exploratória dos dados e gera visualizações.
-        
-        Args:
-            df: DataFrame para análise
-            output_dir: Diretório para salvar gráficos
-        """
         self.logger.info("Iniciando análise exploratória dos dados")
         Path(output_dir).mkdir(parents=True, exist_ok=True)
         
@@ -211,17 +150,16 @@ class FraudDetectionSystem:
         
         # Gráfico de barras
         class_counts = df['Class'].value_counts()
-        axes[0].bar(['Legítimas', 'Fraudes'], class_counts.values, 
-                    color=['#2ecc71', '#e74c3c'])
+        
+        axes[0].bar(['Legítimas', 'Fraudes'], class_counts.values, color=['#2ecc71', '#e74c3c'])
+        
         axes[0].set_title('Distribuição das Classes', fontsize=14, fontweight='bold')
         axes[0].set_ylabel('Quantidade')
         for i, v in enumerate(class_counts.values):
             axes[0].text(i, v + 500, str(v), ha='center', va='bottom', fontsize=12)
         
         # Gráfico de pizza
-        axes[1].pie(class_counts.values, labels=['Legítimas', 'Fraudes'],
-                   autopct='%1.2f%%', colors=['#2ecc71', '#e74c3c'],
-                   explode=(0.05, 0.05))
+        axes[1].pie(class_counts.values, labels=['Legítimas', 'Fraudes'],autopct='%1.2f%%', colors=['#2ecc71', '#e74c3c'], explode=(0.05, 0.05))
         axes[1].set_title('Proporção das Classes', fontsize=14, fontweight='bold')
         
         plt.tight_layout()
@@ -238,7 +176,9 @@ class FraudDetectionSystem:
             f.write(f"Transações fraudulentas: {class_counts.get(1, 0)}\n")
             f.write(f"Percentual de fraudes: {(class_counts.get(1, 0) / len(df) * 100):.4f}%\n\n")
             f.write("=== DESCRIÇÃO DOS DADOS ===\n\n")
+            
             f.write(df.describe().to_string())
+            
         self.logger.info(f"Estatísticas salvas em {stats_file}")
         
         # 3. Correlação entre features
@@ -628,24 +568,25 @@ def main():
         print("EXECUÇÃO CONCLUÍDA COM SUCESSO!")
         print("=" * 80)
         print("\nArquivos gerados:")
-        print("  📊 output/class_distribution.png - Distribuição das classes")
-        print("  📊 output/correlation_matrix.png - Matriz de correlação")
-        print("  📊 output/amount_distribution.png - Distribuição de valores")
-        print("  📊 output/temporal_analysis.png - Análise temporal")
-        print("  📊 output/confusion_matrix.png - Matriz de confusão")
-        print("  📊 output/roc_curve.png - Curva ROC")
-        print("  📊 output/precision_recall_curve.png - Curva Precision-Recall")
-        print("  📊 output/feature_importance.png - Importância das features")
-        print("  📄 output/fraud_detection_report.txt - Relatório completo")
-        print("  📁 models/ - Modelos treinados")
-        print("  📁 logs/ - Logs do sistema")
+        print("output/class_distribution.png - Distribuição das classes")
+        print("output/correlation_matrix.png - Matriz de correlação")
+        print("output/amount_distribution.png - Distribuição de valores")
+        print("output/temporal_analysis.png - Análise temporal")
+        print("output/confusion_matrix.png - Matriz de confusão")
+        print("output/roc_curve.png - Curva ROC")
+        print("output/precision_recall_curve.png - Curva Precision-Recall")
+        print("output/feature_importance.png - Importância das features")
+        print("output/fraud_detection_report.txt - Relatório completo")
+        print("models/ - Modelos treinados")
+        print("logs/ - Logs do sistema")
+        
         print()
         
         logger.info("Sistema executado com sucesso")
         
     except Exception as e:
         logger.error(f"Erro durante execução: {str(e)}")
-        print(f"\n❌ Erro: {str(e)}")
+        print(f"\nErro: {str(e)}")
         sys.exit(1)
 
 
