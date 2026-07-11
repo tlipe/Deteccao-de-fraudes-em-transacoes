@@ -1,12 +1,12 @@
 # Detecção de Fraudes em Transações Financeiras
 
-## 📋 Visão Geral
+## Visão Geral
 
 Este projeto implementa um **Sistema Completo de Detecção de Fraudes em Transações Financeiras** utilizando Python, Machine Learning e boas práticas de engenharia de software. Desenvolvido para o curso de Python da DIO.
 
 O sistema utiliza o dataset público de cartões de crédito disponível em: https://storage.googleapis.com/download.tensorflow.org/data/creditcard.csv
 
-## 🎯 Objetivos
+## Objetivos
 
 - Detectar transações fraudulentas em dados de cartão de crédito
 - Implementar pipeline completo de ML com pré-processamento, treinamento e avaliação
@@ -14,7 +14,7 @@ O sistema utiliza o dataset público de cartões de crédito disponível em: htt
 - Utilizar logging e segurança para monitoramento e proteção de dados
 - Documentar todo o processo para fins educacionais
 
-## 🏗️ Arquitetura do Sistema
+## Arquitetura do Sistema
 
 ```
 fraud_detection.py
@@ -30,13 +30,13 @@ fraud_detection.py
 └── main                    # Pipeline completo
 ```
 
-## 📦 Dependências
+## Dependências
 
 ```bash
 pip install pandas scikit-learn matplotlib seaborn numpy joblib
 ```
 
-## 🚀 Como Executar
+## Como Executar
 
 ```bash
 python3 fraud_detection.py
@@ -53,7 +53,7 @@ O sistema executará as seguintes etapas:
 5. **Visualizações** - Gráficos de desempenho do modelo
 6. **Salvamento** - Modelo, relatório e logs
 
-## 📊 Resultados Gerados
+## Resultados Gerados
 
 ### Diretório `output/`
 
@@ -83,7 +83,7 @@ O sistema executará as seguintes etapas:
 
 Logs detalhados de cada execução com timestamps.
 
-## 📈 Métricas do Modelo
+## Métricas do Modelo
 
 O modelo Random Forest alcança excelentes resultados:
 
@@ -101,7 +101,7 @@ Real Legítima      85207        88
 Real Fraude           25       123
 ```
 
-## 🔒 Recursos de Segurança
+## Recursos de Segurança
 
 ### SecurityManager
 
@@ -109,7 +109,7 @@ Real Fraude           25       123
 - **Validação de Integridade**: Verifica null values, duplicatas e consistência dos dados
 - **Logging Seguro**: Logs em arquivo com controle de acesso
 
-## 📝 Logging
+## Logging
 
 O sistema utiliza o módulo `logging` do Python com:
 
@@ -123,7 +123,7 @@ Exemplo de log:
 2026-07-11 22:11:22 - FraudDetectionSystem - INFO - Treinamento concluído. ROC-AUC: 0.9738
 ```
 
-## 🧠 Modelo de Machine Learning
+## Modelo de Machine Learning
 
 ### Random Forest Classifier
 
@@ -143,13 +143,13 @@ RandomForestClassifier(
 
 ### Por que Random Forest?
 
-- ✅ Lida bem com datasets desbalanceados
-- ✅ Resistente a overfitting
-- ✅ Fornece feature importance
-- ✅ Não requer normalização rigorosa
-- ✅ Parallelizável
+- Lida bem com datasets desbalanceados
+- Resistente a overfitting
+- Fornece feature importance
+- Não requer normalização rigorosa
+- Parallelizável
 
-## 📉 Desafio do Dataset Desbalanceado
+## Desafio do Dataset Desbalanceado
 
 O dataset possui apenas **0.17% de transações fraudulentas**:
 
@@ -163,7 +163,7 @@ O dataset possui apenas **0.17% de transações fraudulentas**:
 2. **Stratified Split**: Mantém proporção nas divisões treino/teste
 3. **Métricas Adequadas**: ROC-AUC, Precision-Recall (não apenas accuracy)
 
-## 🔍 Features do Dataset
+## Features do Dataset
 
 O dataset contém 31 colunas:
 
@@ -172,7 +172,7 @@ O dataset contém 31 colunas:
 - **Amount**: Valor da transação
 - **Class**: Target (0 = legítima, 1 = fraude)
 
-## 📚 Conceitos Demonstrados
+## Conceitos Demonstrados
 
 ### Python Avançado
 - Type hints (`typing`)
@@ -197,7 +197,7 @@ O dataset contém 31 colunas:
 - Validação de integridade
 - Proteção de dados sensíveis
 
-## 🎓 Aprendizados do Projeto
+## Aprendizados do Projeto
 
 1. **Importância do balanceamento** em problemas de classificação
 2. **Escolha adequada de métricas** para datasets desbalanceados
@@ -205,14 +205,8 @@ O dataset contém 31 colunas:
 4. **Segurança de dados** mesmo em projetos educacionais
 5. **Visualização** como ferramenta de análise
 
-## 📄 Licença
+## Licença
 
 Projeto educacional desenvolvido para o curso de Python da DIO.
 
-## 👨‍💻 Autor
-
 Sistema desenvolvido como parte do curso de Python da DIO (Digital Innovation One).
-
----
-
-**🎉 Execute o sistema e explore os gráficos gerados na pasta `output/`!**
